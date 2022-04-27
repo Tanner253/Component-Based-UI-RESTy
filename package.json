@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "dependencies": {
     "axios": "^0.27.2",
+    "gh-pages": "^3.2.3",
     "json-beautify": "^1.1.1",
     "pretty-print-json": "^1.2.4",
     "react": "17.0.2",
@@ -17,7 +18,7 @@
     "sass": "^1.49.9"
   },
   "scripts": {
-    "predeploy": "npm run build", 
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
