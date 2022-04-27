@@ -1,9 +1,11 @@
 import React from 'react';
+import JSONPretty from 'react-json-pretty';
+import 'react-json-pretty/themes/adventure_time.css';
 
 function Results({data}){
   return (
     <section>
-      <pre>{data ? JSON.stringify(data, undefined, 2) : null}</pre>
+      <JSONPretty data={JSON.stringify(data)}></JSONPretty>
     </section>
   );
 }

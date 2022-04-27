@@ -1,5 +1,6 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import './app.scss';
 
 // Let's talk about using index.js and some other name in the component folder
@@ -10,20 +11,32 @@ import Form from './components/form';
 import Results from './components/results';
 
 function App() {
-  let [data, setData] = useState('');
-  let [requestParams, setRequestParams] = useState('');
+  let [data, setData] = useState({});
+  let [requestParams, setRequestParams] = useState({});
 
-  const callApi = (obj) => {
-    // mock output
-    const data = {
-      count: 2,
-      results: [
-        { name: 'fake thing 1', url: 'http://fakethings.com/1' },
-        { name: 'fake thing 2', url: 'http://fakethings.com/2' },
-      ],
-    };
-    setRequestParams(requestParams);
-    setData(data);
+  useEffect(async () => {
+    if(requestParams.method === 'GET'){
+      try{
+        let response = await axios.get(requestParams.url);
+        console.log(response.data.length);
+        setData({
+          count: response.data.length,
+          headers: response.headers,
+          results: response.data,
+        });
+      }catch(e){
+        console.error(e);
+      }
+    }
+  }, [requestParams.url]);
+
+
+  const callApi = async (reqParam) => {
+    try {
+      setRequestParams(reqParam);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
