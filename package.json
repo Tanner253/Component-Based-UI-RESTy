@@ -4,6 +4,7 @@
   "description": "",
   "keywords": [],
   "main": "src/index.js",
+  "homepage": "https://tanner253.github.io/Component-Based-UI-RESTy/",
   "dependencies": {
     "axios": "^0.27.2",
     "gh-pages": "^3.2.3",
