@@ -1,34 +1,49 @@
 import React from 'react';
 import './form.scss';
-import { useState } from 'react';
+import { useReducer } from 'react';
+
+export const intitialState = {
+  url: '',
+  method: 'get',
+  data: {},
+};
+
+export const reducer = (state = intitialState, action) => {
+  const { type, payload } = action;
+  switch (type) {
+  case 'HANDLE INPUT TEXT':
+    return { ...state, [action.field]: action.payload};
+  case 'UPDATE METHOD':
+    return { ...state, method: payload};
+  default:
+    return state;
+  }
+};
 
 function Form({ handleApiCall }) {
-
-  let [url, setUrl] = useState('temp');
-  let [method, setMethod] = useState('GET');
-  let [data, setData] = useState({});
+  let [state, dispatch] = useReducer(reducer, intitialState);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setUrl(e.target.url.value);
-    console.log(method, url, data);
-    let obj = {
-      url: url,
-      method: method,
-      data: data,
-    };
-    handleApiCall(obj);
+    try {
+      e.preventDefault();
+      handleApiCall(state);
+    }
+    catch (e) {
+      console.error(e);
+    }
   };
 
-  const updateMethod = (e) => {
-    let { id } = e.target;
-    setMethod(id.toUpperCase());
-  };
-
-  const onChange = (e) => {
-    let { name, value } = e.target;
-    if (name === 'url') setUrl(value);
-    if (name === 'body') setData(value);
+  const handleTextChange = (e) => {
+    try{
+      dispatch({
+        type: 'HANDLE INPUT TEXT',
+        field: e.target.name,
+        payload: e.target.value,
+      });
+    }
+    catch(e){
+      console.error(e);
+    }
   };
 
   return (
@@ -37,19 +52,19 @@ function Form({ handleApiCall }) {
         <label>
           <span>URL: </span>
           {/* name is for inpur/label */}
-          <input name='url' type='text' onChange={onChange} />
+          <input name='url' type='text' onChange={handleTextChange}/>
           <button type='submit'>GO!</button>
         </label>
         <label className='methods'>
-          <span id='get' onClick={updateMethod}>GET</span>
-          <span id='post' onClick={updateMethod}>POST</span>
-          <span id='put' onClick={updateMethod}>PUT</span>
-          <span id='delete' onClick={updateMethod}>DELETE</span>
+          <span onClick={ ()=> dispatch({ type: 'UPDATE METHOD', payload: 'get'}) } id='get'>GET</span>
+          <span onClick={ ()=> dispatch({ type: 'UPDATE METHOD', payload: 'post'}) } id='post'>POST</span>
+          <span onClick={ ()=> dispatch({ type: 'UPDATE METHOD', payload: 'put'}) } id='put'>PUT</span>
+          <span onClick={ ()=> dispatch({ type: 'UPDATE METHOD', payload: 'delete'}) } id='delete'>DELETE</span>
         </label>
-        {method === 'POST' || method === 'PUT' ?
+        {state.method === 'POST' || state.method === 'PUT' ?
           <>
             <span>JSON BODY</span>
-            <textarea name='body' type='text' onChange={onChange}></textarea>
+            <textarea name='data' type='text' onChange={handleTextChange}></textarea>
           </>
           : ''
         }
